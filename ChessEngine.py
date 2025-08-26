@@ -173,38 +173,40 @@ class gameState():
                 return True
         return False
 
-
-
-
     def getValidMoves(self):
-        tempEnpassantPossible=self.enpassantPossible
-        tempCastlingRights=CastleRight(self.currentCastlingRight.wks,self.currentCastlingRight.bks,
-                                     self.currentCastlingRight.wqs,self.currentCastlingRight.bqs) #copy current castling right
-    #1)generate all possible moves
-        moves= self.getAllPossibleMoves()
+        self.checkMate = False  # ⬅️ reset trạng thái mỗi lần gọi
+        self.staleMate = False
+
+        tempEnpassantPossible = self.enpassantPossible
+        tempCastlingRights = CastleRight(
+            self.currentCastlingRight.wks,
+            self.currentCastlingRight.bks,
+            self.currentCastlingRight.wqs,
+            self.currentCastlingRight.bqs
+        )
+
+        moves = self.getAllPossibleMoves()
         if self.whiteToMove:
-            self.getCastleMove(self.whiteKingLocation[0],self.whiteKingLocation[1],moves)
+            self.getCastleMove(self.whiteKingLocation[0], self.whiteKingLocation[1], moves)
         else:
-            self.getCastleMove(self.blackKingLocation[0],self.blackKingLocation[1], moves)
-    #2) for each move,make a move
-        for i in range(len(moves)-1,-1,-1): #when removing from the lists, go backward through list
+            self.getCastleMove(self.blackKingLocation[0], self.blackKingLocation[1], moves)
+
+        for i in range(len(moves) - 1, -1, -1):
             self.makeMove(moves[i])
-    #3) generate all oppent moves
-    #4) for each opponent moves,see if they attack your queen
-            self.whiteToMove=not self.whiteToMove  #hàm make move đã chuyển turn trước nên chuyển lại turn để kiểm tra xem có chiếu không
+            self.whiteToMove = not self.whiteToMove
             if self.inCheck():
-                moves.remove(moves[i])            #5) if do attack, not a valid move
-            self.whiteToMove=not self.whiteToMove #nếu không chiếu thì trả lại turn cho người đối thủ
+                moves.remove(moves[i])
+            self.whiteToMove = not self.whiteToMove
             self.undoMove()
-        if len(moves)==0: #either checkmate or stalemate
+
+        if len(moves) == 0:
             if self.inCheck():
-                self.checkMate=True
+                self.checkMate = True
             else:
-                self.staleMate=True
+                self.staleMate = True
 
-
-        self.enpassantPossible=tempEnpassantPossible
-        self.currentCastlingRight=tempCastlingRights
+        self.enpassantPossible = tempEnpassantPossible
+        self.currentCastlingRight = tempCastlingRights
         return moves
 
     def getAllPossibleMoves(self):

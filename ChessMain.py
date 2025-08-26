@@ -3,10 +3,11 @@ this Class responsible for handling user input and displaying current game state
 """
 from difflib import SequenceMatcher
 
+#import pygame as p
 import pygame as p
 import ChessEngine
 import SmartMoveFinder
-from Chess.SmartMoveFinder import checkStateGame
+from SmartMoveFinder import checkStateGame
 
 '''Code chỉnh màu điều chỉnh bàn cờ'''
 
